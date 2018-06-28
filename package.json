@@ -1,0 +1,20 @@
+{
+  "name": "trans-loader",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0-beta.51",
+    "@babel/preset-flow": "^7.0.0-beta.51",
+    "@babel/preset-react": "^7.0.0-beta.51",
+    "typescript": "^2.9.2"
+  },
+  "devDependencies": {
+    "webpack": "^4.12.2",
+    "webpack-cli": "^3.0.8"
+  }
+}

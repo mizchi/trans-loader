@@ -1,0 +1,21 @@
+<html>
+
+<head>
+  <title>trans-loader demo</title>
+  <meta charset="utf8">
+</head>
+
+<body>
+  <div class=root></div>
+  <script type=module>
+
+(async () => {
+  const reg = await navigator.serviceWorker.register("/sw.js");
+  await navigator.serviceWorker.ready;
+  import('/main.js')
+})()
+
+  </script>
+</body>
+
+</html>
