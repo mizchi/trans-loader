@@ -1,28 +1,19 @@
 # trans-loader
 
-You don't need **npm** and **bundler** like webpack.
+You don't need **npm** and **bundler**.
 
-This is just a `service-worker` script
+You need just a `service-worker` script.
 
-- transform babel
-- transform typescript
-- load npm modules from [jspm.io](https://jspm.io)
+## What this script does...
+
+- Transform `.js` with babel on service-worker
+- Transform `.ts` and `.tsx` with typescript on service-worker
+- Load modules from [jspm.io](https://jspm.io) and cache them on serviceWorker.
 
 ## CAUTION!
 
 - **development only**. Do not use for production.
-- It works only for modern browser(ES Modules ready).
-
-## How it works
-
-Rewrite npm module path to `dev.jspm.io`.
-
-```js
-// before
-import React from "react";
-// after compiled
-import React from "https://dev.jspm.io/react";
-```
+- It works only for modern browser(ES2015+ and ES Modules ready).
 
 ## How to use
 
@@ -32,7 +23,7 @@ Put [dist/sw.js](/dist/sw.js) as `/sw.js` on your app root.
 wget https://raw.githubusercontent.com/mizchi/trans-loader/master/dist/sw.js
 ```
 
-Rewrite your code like below.
+Rewrite your entry js like below.
 
 Before
 
@@ -45,7 +36,7 @@ After
 ```html
 <script type=module>
 (async () => {
-  const run = () => import('/main.js')
+  const run = () => import('/main.js') // your entry js
   if (navigator.serviceWorker.controller) {
     run()
   } else {
@@ -81,8 +72,36 @@ components/App.js
 // main.js
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App"; // load relative directly from './main.js'
+import App from "./components/App";
 ReactDOM.render(<App />, document.querySelector(".root"));
+```
+
+## Example 3: Load typescript
+
+```
+index.html
+sw.js
+main.js
+components/App.tsx
+```
+
+```js
+// main.js
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./components/App.tsx"; // You need extension yet...
+ReactDOM.render(<App />, document.querySelector(".root"));
+```
+
+## How it works
+
+Rewrite npm module path to `dev.jspm.io`. See [this code](/src/rewriteModulePath.js)
+
+```js
+// before
+import React from "react";
+// after
+import React from "https://dev.jspm.io/react";
 ```
 
 ## Advanced: How to build your own trans-loader
