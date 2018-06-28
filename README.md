@@ -22,11 +22,10 @@ import React from "https://dev.jspm.io/react";
 
 ## How to use
 
-Put '/sw.js' on your app root to handle scope.
+Put '/sw.js' on your app root.
 
 ```
-# Under your app root
-wget mizchi/dev-sw.js # wip
+wget https://raw.githubusercontent.com/mizchi/trans-loader/master/dist/sw.js
 ```
 
 Rewrite your code like below.
