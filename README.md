@@ -1,17 +1,19 @@
 # trans-loader
 
-Just a service-worker with babel/typescript transform, and load npm modules from `dev.jspm.io`.
+Just a `service-worker script` with babel/typescript transform.
 
-You don't need local npm and js bundler like webpack.
+You don't need **npm** and **bundler** like webpack. It works as standalone.
 
-- **Only for development**. Do not use for production.
+## CAUTION!
+
+- **development only**. Do not use for production.
 - It works only for modern browser(ES Modules ready).
 
 ## How it works
 
-- Fetch '.js' compiled with babel
-- Fetch '.ts', '.tsx' compiled with typescript
-- Rewrite module path to `dev.jspm.io`.
+- Fetch `.js` compiled with babel
+- Fetch `.ts`, `.tsx` compiled with typescript
+- Rewrite npm module path to `dev.jspm.io`.
 
 ```js
 // before
@@ -24,7 +26,7 @@ import React from "https://dev.jspm.io/react";
 
 Put '/sw.js' on your app root.
 
-```
+```sh
 wget https://raw.githubusercontent.com/mizchi/trans-loader/master/dist/sw.js
 ```
 
@@ -48,6 +50,7 @@ After
 </script>
 ```
 
+See working [demo](/demo)
 TIPS: If it does not work at first, please reload once. I will fix to ensure this script
 
 ## Example 1: Compiled with babel
@@ -59,7 +62,7 @@ import ReactDOM from "react-dom";
 ReactDOM.render(<h1>Hello</h1>, document.querySelector(".root"));
 ```
 
-## Example 2: Load local module
+## Example 2: Load relative file
 
 ```
 index.html
@@ -72,9 +75,7 @@ components/App.js
 // main.js
 import React from "react";
 import ReactDOM from "react-dom";
-// load relative directly from './main.js'
-// TODO: Load without .js extension like npm
-import App from "./components/App.js";
+import App from "./components/App"; // load relative directly from './main.js'
 ReactDOM.render(<App />, document.querySelector(".root"));
 ```
 
@@ -108,8 +109,9 @@ export function transformWithBabel(source, filename = "") {
 
 ## TODO
 
-- Support package.json to load with version
-- Can load without extname
+- Ensure service-worker loading
+- Support `package.json` to load with version
+- Can load without extname for `.ts`
 
 ## LICENSE
 
