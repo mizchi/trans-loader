@@ -1,4 +1,5 @@
 import path from "path";
+import ensurePackageLoading from "./ensurePackageLoading";
 import { transformWithBabel } from "./transformWithBabel";
 import { transformWithTypeScript } from "./transformWithTypeScript";
 
@@ -36,15 +37,18 @@ self.addEventListener("fetch", event => {
       extname.length > 0 ? event.request.url : event.request.url + ".js";
     if (compiler) {
       event.respondWith(
-        fetch(url)
-          .then(res => res.text())
-          .then(source => {
-            const output = compiler(source);
-            return new Response(output, {
-              mode: "no-cors",
-              headers: { "Content-Type": "text/javascript" }
-            });
-          })
+        // load __package before transform
+        ensurePackageLoading().then(() =>
+          fetch(url)
+            .then(res => res.text())
+            .then(source => {
+              const output = compiler(source);
+              return new Response(output, {
+                mode: "no-cors",
+                headers: { "Content-Type": "text/javascript" }
+              });
+            })
+        )
       );
     }
   }

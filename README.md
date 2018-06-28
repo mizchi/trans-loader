@@ -93,6 +93,33 @@ import App from "./components/App.tsx"; // You need extension yet...
 ReactDOM.render(<App />, document.querySelector(".root"));
 ```
 
+## Example 4: Loading with `package.json`'s version
+
+```
+index.html
+sw.js
+main.js
+package.json
+```
+
+`package.json`
+
+```
+{
+  "dependencies": {
+    "react": "16.4.1",
+    "react-dom": "16.4.1"
+  }
+}
+```
+
+Log
+
+```
+trans-loader: Cache https://dev.jspm.io/react@16.4.1
+trans-loader: Cache https://dev.jspm.io/react-dom@16.4.1
+```
+
 ## How it works
 
 Rewrite npm module path to `dev.jspm.io`. See [this code](/src/rewriteModulePath.js)

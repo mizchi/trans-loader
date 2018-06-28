@@ -1,6 +1,5 @@
 const path = require("path");
 module.exports = {
-  mode: "production",
   entry: {
     sw: __dirname + "/src/sw.js"
   },
