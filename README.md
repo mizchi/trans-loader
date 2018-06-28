@@ -1,8 +1,12 @@
 # trans-loader
 
-Just a `service-worker script` with babel/typescript transform.
+You don't need **npm** and **bundler** like webpack.
 
-You don't need **npm** and **bundler** like webpack. It works as standalone.
+This is just a `service-worker` script
+
+- transform babel
+- transform typescript
+- load npm modules from [jspm.io](https://jspm.io)
 
 ## CAUTION!
 
@@ -11,9 +15,7 @@ You don't need **npm** and **bundler** like webpack. It works as standalone.
 
 ## How it works
 
-- Fetch `.js` compiled with babel
-- Fetch `.ts`, `.tsx` compiled with typescript
-- Rewrite npm module path to `dev.jspm.io`.
+Rewrite npm module path to `dev.jspm.io`.
 
 ```js
 // before
@@ -24,7 +26,7 @@ import React from "https://dev.jspm.io/react";
 
 ## How to use
 
-Put '/sw.js' on your app root.
+Put [dist/sw.js](/dist/sw.js) as `/sw.js` on your app root.
 
 ```sh
 wget https://raw.githubusercontent.com/mizchi/trans-loader/master/dist/sw.js
@@ -51,6 +53,7 @@ After
 ```
 
 See working [demo](/demo)
+
 TIPS: If it does not work at first, please reload once. I will fix to ensure this script
 
 ## Example 1: Compiled with babel
