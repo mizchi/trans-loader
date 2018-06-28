@@ -37,7 +37,7 @@ Rewrite your code like below.
 Before
 
 ```html
-<script src="/your-entry.js"></script>
+<script src="/main.js"></script>
 ```
 
 After
@@ -45,22 +45,25 @@ After
 ```html
 <script type=module>
 (async () => {
-  const reg = await navigator.serviceWorker.register("/sw.js");
-  await navigator.serviceWorker.ready;
-  import('/your-entry.js')
+  const run = () => import('/main.js')
+  if (navigator.serviceWorker.controller) {
+    run()
+  } else {
+    const reg = await navigator.serviceWorker.register("/sw.js");
+    await navigator.serviceWorker.ready;
+    navigator.serviceWorker.addEventListener('controllerchange', run)
+  }
 })()
 </script>
 ```
 
-See working [demo](/demo)
-
-TIPS: If it does not work at first, please reload once. I will fix to ensure this script
+See [working demo](/demo)
 
 ## Example 1: Compiled with babel
 
 ```js
 // /your-entry.js
-import React from "react"; // load from 'dev.jspm.io/react'
+import React from "react";
 import ReactDOM from "react-dom";
 ReactDOM.render(<h1>Hello</h1>, document.querySelector(".root"));
 ```
@@ -112,7 +115,6 @@ export function transformWithBabel(source, filename = "") {
 
 ## TODO
 
-- Ensure service-worker loading
 - Support `package.json` to load with version
 - Can load without extname for `.ts`
 

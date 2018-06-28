@@ -11,7 +11,7 @@ const compilers = {
 self.addEventListener("install", e => e.waitUntil(self.skipWaiting()));
 self.addEventListener("activate", e => e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", event => {
-  if (event.request.url.indexOf("jspm.io") > -1) {
+  if (event.request.url.indexOf("dev.jspm.io") > -1) {
     // cache jspm result
     event.respondWith(
       caches.match(event.request).then(res => {
