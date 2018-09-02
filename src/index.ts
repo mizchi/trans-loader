@@ -1,6 +1,6 @@
 declare var self: any;
 
-import ensurePackageLoading from "./ensurePackageLoading";
+import ensurePackage from "./ensurePackage";
 import { initState, process } from "./processor";
 import { loadByFetch, selectWithExt, transformByExt } from "./transformers";
 
@@ -18,7 +18,7 @@ self.addEventListener("fetch", (event: any) => {
     event.respondWith(useCacheOrLoad(event.request));
   } else if (event.request.url.indexOf("/src/") > -1) {
     // transform
-    console.log("transform", event.request.url);
+    console.log("trans-loader: with-transform", event.request.url);
     event.respondWith(respondWithTransform(event.request.url));
   }
 });
@@ -26,7 +26,7 @@ self.addEventListener("fetch", (event: any) => {
 // helpers
 
 async function respondWithTransform(url: string) {
-  await ensurePackageLoading();
+  await ensurePackage();
   const processors = [selectWithExt, loadByFetch, transformByExt];
   const ctx = initState(url);
   const output = await process(ctx, processors);
