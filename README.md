@@ -28,7 +28,7 @@ Rewrite your entry js like below.
 Before
 
 ```html
-<script src="/main.js"></script>
+<script src="/src/main.js"></script>
 ```
 
 After
@@ -36,7 +36,7 @@ After
 ```html
 <script type=module>
 (async () => {
-  const run = () => import('/main.js') // your entry js
+  const run = () => import('/src/main.js') // your entry js
   if (navigator.serviceWorker.controller) {
     run()
   } else {
@@ -64,8 +64,8 @@ ReactDOM.render(<h1>Hello</h1>, document.querySelector(".root"));
 ```
 index.html
 sw.js
-main.js
-components/App.js
+src/main.js
+src/components/App.js
 ```
 
 ```js
@@ -81,8 +81,8 @@ ReactDOM.render(<App />, document.querySelector(".root"));
 ```
 index.html
 sw.js
-main.js
-components/App.tsx
+src/main.js
+src/components/App.tsx
 ```
 
 ```js
@@ -98,8 +98,8 @@ ReactDOM.render(<App />, document.querySelector(".root"));
 ```
 index.html
 sw.js
-main.js
 package.json
+src/main.js
 ```
 
 `package.json`
@@ -122,6 +122,27 @@ trans-loader: Cache https://dev.jspm.io/react-dom@16.4.1
 
 ## How it works
 
+### Rewrite js content with service-worker proxy
+
+Compile content with babel/typescript by extname
+
+```js
+// ...
+self.addEventListener("fetch", (event: any) => {
+  if (event.request.url.indexOf("dev.jspm.io") > -1) {
+    // cache jspm result
+    event.respondWith(useCacheOrLoad(event.request));
+  } else if (event.request.url.indexOf("/src/") > -1) {
+    // transform
+    console.log("trans-loader: with-transform", event.request.url);
+    event.respondWith(respondWithTransform(event.request.url));
+  }
+});
+```
+
+
+### Rewrite to dev.jspm.io
+
 Rewrite npm module path to `dev.jspm.io`. See [this code](/src/rewriteModulePath.js)
 
 ```js
@@ -130,6 +151,11 @@ import React from "react";
 // after
 import React from "https://dev.jspm.io/react";
 ```
+
+### Add valid extname
+
+- Try to access `.js, .mjs, .ts, .tsx, /index.js, /index.ts, /index.tsx`
+- return file with non-error endpoint
 
 ## LICENSE
 
