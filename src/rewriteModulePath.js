@@ -6,7 +6,9 @@ export default function rewriteModulePath({ types }) {
   return {
     pre(file) {
       this.types = types;
-      this._dirname = path.dirname(this.opts.filename || file.opts.filename);
+      // this._dirname = path.dirname(this.opts.filename || file.opts.filename);
+      // this._dirname = path.dirname(this.opts.filename || file.opts.filename);
+      console.log("rewrite", file, this);
     },
 
     visitor: {
@@ -22,11 +24,12 @@ export default function rewriteModulePath({ types }) {
           return;
         } else {
           // add version
+          const pkg = this.opts.package;
           const version =
-            typeof self === "object" && // in service worker
-            self.__package && // ensure __package
-            self.__package.dependencies &&
-            self.__package.dependencies[importTarget];
+            typeof self === "object" &&
+            pkg &&
+            pkg.dependencies &&
+            pkg.dependencies[importTarget];
           // (self.__package.devDependencies &&
           //   self.__package.devDependencies[importTarget]);
           const target = importTarget + (!!version ? "@" + version : "");

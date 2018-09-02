@@ -1,3 +1,5 @@
+declare var self: any;
+
 export default async function ensurePackageLoading() {
   if (self.__package) {
     return;
