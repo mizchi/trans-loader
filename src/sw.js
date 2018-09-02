@@ -1,12 +1,11 @@
 import path from "path";
 import ensurePackageLoading from "./ensurePackageLoading";
-import { transformWithBabel } from "./transformWithBabel";
-import { transformWithTypeScript } from "./transformWithTypeScript";
+import { transformWithBabel, transformWithBabelTS } from "./transformWithBabel";
 
 const compilers = {
   ".js": transformWithBabel,
-  ".ts": transformWithTypeScript,
-  ".tsx": transformWithTypeScript
+  ".ts": transformWithBabelTS,
+  ".tsx": transformWithBabelTS
 };
 
 self.addEventListener("install", e => e.waitUntil(self.skipWaiting()));

@@ -2,7 +2,7 @@ import React from "react";
 import Sub from "./Sub.tsx";
 export default () => (
   <div>
-    This is App component2
+    <p>App 3</p>
     <Sub />
   </div>
 );

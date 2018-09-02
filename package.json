@@ -4,13 +4,17 @@
   "main": "dist/sw.js",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "demo": "NODE_ENV=demo webpack --mode production"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-beta.51",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0-beta.51",
     "@babel/preset-flow": "^7.0.0-beta.51",
     "@babel/preset-react": "^7.0.0-beta.51",
+    "@babel/preset-typescript": "^7.0.0",
     "typescript": "^2.9.2"
   },
   "devDependencies": {
