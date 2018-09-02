@@ -89,7 +89,7 @@ components/App.tsx
 // main.js
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App.tsx"; // You need extension yet...
+import App from "./components/App";
 ReactDOM.render(<App />, document.querySelector(".root"));
 ```
 
@@ -130,39 +130,6 @@ import React from "react";
 // after
 import React from "https://dev.jspm.io/react";
 ```
-
-## Advanced: How to build your own trans-loader
-
-Rewrite this babel setting and rebuild this project.
-
-```js
-// src/transformWithBabel.js
-import { transform } from "@babel/core/lib/transform";
-import pluginSyntaxDynamicImport from "@babel/plugin-syntax-dynamic-import";
-import flow from "@babel/preset-flow";
-import react from "@babel/preset-react";
-import rewriteModulePath from "./rewriteModulePath";
-
-export function transformWithBabel(source, filename = "") {
-  return transform(source, {
-    presets: [flow, react],
-    plugins: [
-      pluginSyntaxDynamicImport,
-      [
-        rewriteModulePath,
-        {
-          filename
-        }
-      ]
-    ]
-  }).code;
-}
-```
-
-## TODO
-
-- Support `package.json` to load with version
-- Can load without extname for `.ts`
 
 ## LICENSE
 

@@ -3,7 +3,8 @@
 Mount this dir to static server and open by your browser.
 
 ```
-# My way
-$ python2 -m SimpleHTTPServer
-$ open http://localhost:8000
+$ yarn demo # on parent directory to build sw.js
+$ cd demo # here
+$ npm i -g http-server
+$ http-server -c-1
 ```
