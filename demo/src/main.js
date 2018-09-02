@@ -1,5 +1,3 @@
-// import "./components/Sub";
-
 import "./foo";
 
 import React from "react";

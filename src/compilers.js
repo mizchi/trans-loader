@@ -1,21 +1,22 @@
 import { transform } from "@babel/core/lib/transform";
-import pluginSyntaxDynamicImport from "@babel/plugin-syntax-dynamic-import";
 import flow from "@babel/preset-flow";
 import ts from "@babel/preset-typescript";
-import objcetRestSpread from "@babel/plugin-proposal-object-rest-spread";
-import classProperties from "@babel/plugin-proposal-class-properties";
 import react from "@babel/preset-react";
-import rewriteModulePath from "./rewriteModulePath";
+
+import syntaxDynamicImport from "@babel/plugin-syntax-dynamic-import";
+import transformObjcetRestSpread from "@babel/plugin-proposal-object-rest-spread";
+import transformClassProperties from "@babel/plugin-proposal-class-properties";
+import pluginRewriteModulePath from "./rewriteModulePath";
 
 export function compileBabel(source, filename = "") {
   return transform(source, {
     presets: [flow, react],
     plugins: [
-      pluginSyntaxDynamicImport,
-      objcetRestSpread,
-      classProperties,
+      syntaxDynamicImport,
+      transformObjcetRestSpread,
+      transformClassProperties,
       [
-        rewriteModulePath,
+        pluginRewriteModulePath,
         {
           filename,
           package: self.__package
@@ -31,11 +32,28 @@ export function compileTypeScript(source, filename = "") {
     filename: "file.tsx",
     presets: [ts, react],
     plugins: [
+      syntaxDynamicImport,
+      transformObjcetRestSpread,
+      transformClassProperties,
+      [
+        pluginRewriteModulePath,
+        {
+          filename,
+          package: self.__package
+        }
+      ]
+    ]
+  }).code;
+}
+
+export function compileModulePath(source, filename = "") {
+  return transform(source, {
+    plugins: [
       pluginSyntaxDynamicImport,
       objcetRestSpread,
-      classProperties,
+      transformClassProperties,
       [
-        rewriteModulePath,
+        pluginRewriteModulePath,
         {
           filename,
           package: self.__package
