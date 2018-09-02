@@ -1,8 +1,8 @@
 import React from "react";
-import Sub from "./Sub.tsx";
+import Sub from "./Sub";
 export default () => (
   <div>
-    <p>App 3</p>
+    <p>App 4</p>
     <Sub />
   </div>
 );

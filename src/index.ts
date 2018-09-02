@@ -3,7 +3,6 @@ declare var self: any;
 import path from "path";
 import ensurePackageLoading from "./ensurePackageLoading";
 import { compileBabel, compileTypeScript } from "./compilers";
-
 import { Context, Processor } from "./types";
 
 console.log(new Date());
@@ -20,10 +19,11 @@ async function process(
   processors: Processor[]
 ): Promise<Context> {
   let current = ctx;
-  for (const processor of processors) {
-    current = await processor(current);
-  }
-  return current;
+  return processors.reduce((acc, prs) => {
+    return acc.then(ctx => {
+      return prs(ctx);
+    });
+  }, Promise.resolve(current));
 }
 
 const loadByFetch: Processor = async ctx => {
@@ -35,12 +35,15 @@ const loadByFetch: Processor = async ctx => {
   };
 };
 
+loadByFetch.toString = () => "load-by-fetch";
+
 const transformBabel: Processor = async ctx => {
   return {
     ...ctx,
     content: compileBabel(ctx.content)
   };
 };
+transformBabel.toString = () => "tranform-babel";
 
 const transformTypeScript: Processor = async ctx => {
   return {
@@ -49,21 +52,60 @@ const transformTypeScript: Processor = async ctx => {
   };
 };
 
-const processorMap: { [extname: string]: Processor[] } = {
-  ".js": [loadByFetch, transformBabel],
-  ".ts": [loadByFetch, transformTypeScript],
-  ".tsx": [loadByFetch, transformTypeScript]
+transformTypeScript.toString = () => "tranform-typescript";
+
+const FALLBACK_EXT = [
+  ".js",
+  ".ts",
+  ".tsx",
+  "/index.js",
+  "/index.ts",
+  "/index.tsx"
+];
+
+const selectWithExt: Processor = async ctx => {
+  const extname = path.extname(ctx.originalUrl);
+  if (extname.length > 0) {
+    return ctx;
+  }
+
+  const urls: any = await Promise.all(
+    FALLBACK_EXT.map(ext => {
+      return fetch(ctx.originalUrl + ext)
+        .then(res => (res.status >= 400 ? "" : ctx.originalUrl + ext))
+        .catch(_e => "");
+    })
+  );
+
+  const url = urls.find((u: string) => u);
+  return {
+    ...ctx,
+    url
+  };
+};
+
+selectWithExt.toString = () => "select-with-ext";
+
+const transformByExt: Processor = async ctx => {
+  const extname = path.extname(ctx.url);
+  if ([".js", ".mjs"].includes(extname)) {
+    return await transformBabel(ctx);
+  }
+  if ([".ts", ".tsx"].includes(extname)) {
+    return await transformTypeScript(ctx);
+  }
+  return ctx;
 };
 
 self.addEventListener("install", (e: any) => e.waitUntil(self.skipWaiting()));
+
 self.addEventListener("activate", (e: any) =>
   e.waitUntil(self.clients.claim())
 );
 
 async function load(url: string) {
   await ensurePackageLoading();
-  const extname = path.extname(url);
-  const processors = processorMap[extname];
+  const processors = [selectWithExt, loadByFetch, transformByExt];
   const ctx: Context = initState(url);
   const output = await process(ctx, processors);
   return new Response(output.content, {
@@ -79,7 +121,7 @@ async function useCacheOrLoad(request: any) {
   }
   const cache = await caches.open("1");
   const response = await fetch(request);
-  cache.put(request, response.clone());
+  await cache.put(request, response.clone());
   console.info("trans-loader: Cache", request.url);
   return response;
 }
@@ -88,12 +130,9 @@ self.addEventListener("fetch", (event: any) => {
   if (event.request.url.indexOf("dev.jspm.io") > -1) {
     // cache jspm result
     event.respondWith(useCacheOrLoad(event.request));
-  } else {
-    const extname = path.extname(event.request.url);
-    const processor = processorMap[extname]; // add `.js` ext
-    // TODO: Add `.ts` if target is typescript
-    if (processor) {
-      event.respondWith(load(event.request.url));
-    }
+  } else if (event.request.url.indexOf("/src/") > -1) {
+    // transform
+    console.log("transform", event.request.url);
+    event.respondWith(load(event.request.url));
   }
 });

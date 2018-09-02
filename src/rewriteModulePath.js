@@ -6,9 +6,6 @@ export default function rewriteModulePath({ types }) {
   return {
     pre(file) {
       this.types = types;
-      // this._dirname = path.dirname(this.opts.filename || file.opts.filename);
-      // this._dirname = path.dirname(this.opts.filename || file.opts.filename);
-      console.log("rewrite", file, this);
     },
 
     visitor: {
@@ -17,9 +14,9 @@ export default function rewriteModulePath({ types }) {
         const isRelative = importTarget[0] === ".";
         if (isRelative) {
           // add .js
-          const extname = path.extname(importTarget);
-          const importTargetWithExt = importTarget + (extname ? "" : ".js");
-          nodePath.node.source.value = importTargetWithExt;
+          // const extname = path.extname(importTarget);
+          // const importTargetWithExt = importTarget + (extname ? "" : ".js");
+          nodePath.node.source.value = importTarget;
         } else if (importTarget.includes("https://")) {
           return;
         } else {

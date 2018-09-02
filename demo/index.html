@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html>
 
 <head>
   <title>trans-loader demo</title>
-  <meta charset="utf8">
+  <meta charset="utf-8">
 </head>
 
 <body>
@@ -20,7 +21,7 @@
   })
   setInterval(() => reg.update(), 1000 * 3)
   await navigator.serviceWorker.ready;
-  import('/main.js')
+  import('./src/main.js')
 })()
   </script>
 </body>

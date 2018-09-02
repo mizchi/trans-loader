@@ -1,6 +1,8 @@
-import "./src/foo.ts";
+// import "./components/Sub";
+
+import "./foo";
 
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App";
+import App from "./components/App.js";
 ReactDOM.render(<App />, document.querySelector(".root"));
