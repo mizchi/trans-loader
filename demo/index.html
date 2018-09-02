@@ -9,14 +9,18 @@
   <div class=root></div>
   <script type=module>
 (async () => {
-  const run = () => import('/main.js')
-  if (navigator.serviceWorker.controller) {
-    run()
-  } else {
-    const reg = await navigator.serviceWorker.register("/sw.js");
-    await navigator.serviceWorker.ready;
-    navigator.serviceWorker.addEventListener('controllerchange', run)
-  }
+  let installed = navigator.serviceWorker.controller != null
+  const reg = await navigator.serviceWorker.register("/sw.js");
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!installed) {
+      installed = true
+    } else {
+      location.reload()
+    }
+  })
+  setInterval(() => reg.update(), 1000 * 3)
+  await navigator.serviceWorker.ready;
+  import('/main.js')
 })()
   </script>
 </body>
