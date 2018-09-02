@@ -5,7 +5,7 @@ module.exports = {
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
     alias: {
-      fs: __dirname + "/src/dummyFS.js"
+      fs: __dirname + "/src/dummy.js"
     }
   },
   output: {

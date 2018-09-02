@@ -11,17 +11,26 @@
   <script type=module>
 (async () => {
   let installed = navigator.serviceWorker.controller != null
+  let started = false
+
+  const run = () => {
+    if (!started) {
+      started = true;
+    };
+  }
+  
   const reg = await navigator.serviceWorker.register("/sw.js");
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (!installed) {
       installed = true
+      run()
     } else {
       location.reload()
     }
   })
   setInterval(() => reg.update(), 1000 * 3)
   await navigator.serviceWorker.ready;
-  import('./src/main.js')
+  import('./src/main.js');
 })()
   </script>
 </body>
